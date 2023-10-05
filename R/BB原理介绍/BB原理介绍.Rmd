@@ -1,0 +1,33 @@
+# 导入ggplot2包
+library(ggplot2)
+
+rm(list=ls())
+
+# 设置参数
+frequency1 <- 360  # 第一个正弦波的频率为430Hz
+frequency2 <- 350 # 第二个正弦波的频率为420Hz
+amplitude <- 1     # 振幅为1
+
+# 创建一个包含时间和正弦波值的数据框
+time <- seq(0, 1, length.out = 1000)  # 时间从0到1，共1000个点
+wave1 <- amplitude * sin(2 * pi * frequency1 * time)  # 第一个正弦波
+wave2 <- amplitude * sin(2 * pi * frequency2 * time)  # 第二个正弦波
+data <- data.frame(time, wave1, wave2)
+
+# 使用ggplot2绘图
+ggplot(data, aes(x = time)) +
+  geom_line(aes(y = wave1, color = "430Hz")) +
+  geom_line(aes(y = wave2, color = "420Hz")) +
+  labs(x = "时间", y = "振幅", title = "两个正弦波") +
+  scale_color_manual(values = c("430Hz" = "blue", "420Hz" = "red")) +
+  theme_minimal()
+
+wave_difference <- wave1 - wave2  # 计算两个波的差值
+datawav <- data.frame(time, wave_difference)
+
+ggplot(datawav, aes(x = time, y = wave_difference)) +
+  geom_line(color = "black") +
+  labs(x = "时间", y = "振幅差值", title = "两个正弦波的振幅差值") +
+  theme_minimal()
+
+
