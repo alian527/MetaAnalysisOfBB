@@ -1,0 +1,65 @@
+library(meta)
+library(readxl)
+
+rm(list=ls())
+
+
+df<- read_xlsx("双耳节拍效应对术后焦虑的研究.xlsx")
+study<- df[,1]
+year<- df[,2]
+n1 <- df[,3]
+group1_mean <- df[,4]
+group1_sd <- df[,5]
+n2 <- df[,6]
+group2_mean <-  df[,7]
+group2_sd <-  df[,8]
+
+# 计算效应值和标准误
+effect_sizes <- (group2_mean - group1_mean) / sqrt((group1_sd^2 / n1) + (group2_sd^2 / n2))
+standard_errors <- sqrt((1 / n1) + (1 / n2)) * sqrt((group1_sd^2 + group2_sd^2) / 2)
+# 创建数据框
+data <- data.frame(study=study,year=year,EffectSize = effect_sizes, SE = standard_errors)
+colnames(data) <- c("study","year",'EffectSize', 'SE')
+# 创建元分析对象
+res <- metagen(studlab = paste(study,year,sep = ','),TE = EffectSize, seTE = SE, data = data,comb.fixed=FALSE)
+
+windows(width = 9, height =4)
+# 绘制森林图
+forest(res,layout = "revman5")
+forest(metainf(res), layout = "revman5")
+
+
+metareg(res,formula = ethinicity+cutoff+sample_size+treatment)
+funnel(res)
+
+df<- read_xlsx("双耳节拍效应对焦虑的研究.xlsx")
+df1=df[,-1]
+df1[] <- lapply(df1, as.numeric)
+df1$study=df[,1]
+df=df1
+last_col <- df[, ncol(df)]
+df <- df[, -ncol(df)]
+df <- cbind(last_col, df)
+study<- df[,1]
+year<- df[,2]
+n1 <- df[,3]
+group1_mean <- df[,4]
+group1_sd <- df[,5]
+n2 <- df[,6]
+group2_mean <-  df[,7]
+group2_sd <-  df[,8]
+# 计算效应值和标准误
+effect_sizes <- (group2_mean - group1_mean) / sqrt((group1_sd^2 / n1) + (group2_sd^2 / n2))
+standard_errors <- sqrt((1 / n1) + (1 / n2)) * sqrt((group1_sd^2 + group2_sd^2) / 2)
+
+# 创建数据框
+data2 <- data.frame(study=study,year=year,EffectSize = effect_sizes, SE = standard_errors)
+colnames(data2) <- c("study","year",'EffectSize', 'SE')
+# 创建元分析对象
+res <- metagen(studlab = paste(study,year,sep = ','),TE = EffectSize, seTE = SE, data = data2,comb.fixed=FALSE)
+
+windows(width = 9, height =4)
+# 绘制森林图
+forest(res,layout = "revman5")
+forest(metainf(res), layout = "revman5")
+

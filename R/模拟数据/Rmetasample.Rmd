@@ -1,6 +1,9 @@
 library(meta)
 library(readxl)
 
+install.packages("compute.es")
+library(compute.es)
+
 rm(list=ls())
 
 
@@ -16,6 +19,8 @@ group2_sd <-  df[,8]
 
 # 计算效应值和标准误
 effect_sizes <- (group2_mean - group1_mean) / sqrt((group1_sd^2 / n1) + (group2_sd^2 / n2))
+
+
 standard_errors <- sqrt((1 / n1) + (1 / n2)) * sqrt((group1_sd^2 + group2_sd^2) / 2)
 # 创建数据框
 data <- data.frame(study=study,year=year,EffectSize = effect_sizes, SE = standard_errors)
